@@ -1,0 +1,4 @@
+# Generated build output - never committed
+build/
+*.exe
+*.o
