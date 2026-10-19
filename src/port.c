@@ -20,19 +20,19 @@ uint8_t port_get(void)
 void port_set_pin(uint8_t pin)
 {
     /* TODO: set bit 'pin' of port_out to 1. */
-    port_out |= (1 << pin);
+    port_out |= (1u << pin);
 }
 
 void port_clear_pin(uint8_t pin)
 {
     /* TODO: clear bit 'pin' of port_out to 0. */
-    port_out &= ~(1 << pin);
+    port_out &= ~(1u << pin);
 }
 
 void port_toggle_pin(uint8_t pin)
 {
     /* TODO: flip bit 'pin' of port_out. */
-    port_out ^= (1 << pin);
+    port_out ^= (1u << pin);
 }
 
 bool port_read_pin(uint8_t pin)
