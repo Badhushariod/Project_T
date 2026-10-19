@@ -7,7 +7,8 @@
 
 ## Starting assessment (2026-10-19)
 Background: Nuvoton, ESP, Keil. I know ISRs, direct register access and
-scatter files as ideas, but I haven't written them myself yet.
+scatter files as ideas. At work I have mostly written firmware with AI help.
+Goal of this project: be able to write and debug it on my own.
 
 | Topic | Result | Notes |
 |---|---|---|
