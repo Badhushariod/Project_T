@@ -24,6 +24,9 @@ should work. If a build behaves differently, note your version in
 `LEARNING_LOG.md`.
 
 ## Build and run (from the project root)
+All commands run in the **MSYS2 UCRT64** shell. If your terminal prompt starts
+with `PS` (PowerShell) or `C:\>` (cmd), type `./msys` (or `msys` in cmd)
+first to switch into it.
 ```
 mkdir -p build
 gcc -std=c11 -Wall -Wextra -Wpedantic exercises/00_toolchain/hello.c -o build/hello.exe
