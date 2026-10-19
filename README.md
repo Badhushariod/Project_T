@@ -34,5 +34,6 @@ gcc -std=c11 -Wall -Wextra -Wpedantic exercises/00_toolchain/hello.c -o build/he
 ```
 Expected output: `Project_T: toolchain OK`
 
-## Current milestone
-Milestone 0: Toolchain ready
+## Milestones
+- [x] Milestone 0: Toolchain ready (4-stage build, error-message types)
+- [ ] Milestone 1: Simulated 8-LED output port (bit operations, CLI)
