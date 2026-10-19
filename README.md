@@ -34,6 +34,12 @@ gcc -std=c11 -Wall -Wextra -Wpedantic exercises/00_toolchain/hello.c -o build/he
 ```
 Expected output: `Project_T: toolchain OK`
 
+## Run the tests
+```
+gcc -std=c11 -Wall -Wextra -Wpedantic -Isrc src/port.c tests/test_port.c -o build/test_port.exe && ./build/test_port.exe
+```
+Every check prints `PASS` or `FAIL`; the last line shows the total.
+
 ## Milestones
 - [x] Milestone 0: Toolchain ready (4-stage build, error-message types)
 - [ ] Milestone 1: Simulated 8-LED output port (bit operations, CLI)
