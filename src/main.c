@@ -72,7 +72,7 @@ int main(void)
                 printf("error: no pin %d (valid pins: 0-7)\n", pin);
             }
         } else if (strcmp(cmd, "read") == 0){
-            if (pin > 7)
+            if (pin >= (int)PORT_PIN_COUNT  || pin <0)
             {
                 printf("error: no pin %d (valid pins: 0-7)\n", pin);
                 continue;
