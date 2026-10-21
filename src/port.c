@@ -20,7 +20,7 @@ uint8_t port_get(void)
 bool port_set_pin(uint8_t pin)
 {
     /* TODO: set bit 'pin' of port_out to 1. */
-    if (pin > 7)
+    if (pin >= PORT_PIN_COUNT )
     {
         return false;
     }
@@ -31,7 +31,7 @@ bool port_set_pin(uint8_t pin)
 bool port_clear_pin(uint8_t pin)
 {
     /* TODO: clear bit 'pin' of port_out to 0. */
-    if (pin > 7)
+    if (pin >= PORT_PIN_COUNT )
     {
         return false;
     }
@@ -42,7 +42,7 @@ bool port_clear_pin(uint8_t pin)
 bool port_toggle_pin(uint8_t pin)
 {
     /* TODO: flip bit 'pin' of port_out. */
-    if (pin > 7)
+    if (pin >= PORT_PIN_COUNT )
     {
         return false;
     }
@@ -54,6 +54,10 @@ bool port_read_pin(uint8_t pin)
 {
     /* TODO: return true if bit 'pin' of port_out is 1, false if it is 0. */
 
+    if (pin >= PORT_PIN_COUNT )
+    {
+        return false;
+    }
     if ( port_out & (1u << pin) )
     {
         return true;
