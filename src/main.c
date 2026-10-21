@@ -57,8 +57,22 @@ int main(void)
             else {
                 printf("error: no pin %d (valid pins: 0-7)\n", pin);
             }
-            
-        }
+        } else if (strcmp(cmd, "clear") == 0){
+            if (port_clear_pin(pin)){
+                display_show(port_get());
+            }
+            else {
+                printf("error: no pin %d (valid pins: 0-7)\n", pin);
+            }
+        } else if (strcmp(cmd, "toggle") == 0){
+            if (port_toggle_pin(pin)){
+                display_show(port_get());
+            }
+            else {
+                printf("error: no pin %d (valid pins: 0-7)\n", pin);
+            }
+        } 
+
         /* TODO: add your commands here: show, set, clear, toggle, read */
         else {
             printf("unknown command '%s' (type 'help')\n", cmd);
