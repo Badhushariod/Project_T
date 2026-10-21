@@ -12,5 +12,14 @@
             }
         }
     },
-    "terminal.integrated.defaultProfile.windows": "MSYS2 UCRT64"
+    "terminal.integrated.defaultProfile.windows": "MSYS2 UCRT64",
+
+    // No automatic code suggestions in this project: write it yourself.
+    // Press Ctrl+Space if you ever want the suggestion list on purpose.
+    "editor.quickSuggestions": { "other": "off", "comments": "off", "strings": "off" },
+    "editor.suggestOnTriggerCharacters": false,
+    "editor.wordBasedSuggestions": "off",
+    "editor.inlineSuggest.enabled": false,
+    "C_Cpp.autocomplete": "disabled",
+    "github.copilot.enable": { "*": false }
 }
