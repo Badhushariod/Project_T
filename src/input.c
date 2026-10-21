@@ -18,24 +18,38 @@ uint8_t input_get(void)
 
 bool input_press(uint8_t pin)
 {
-    /* TODO: invalid pin -> return false.
-     *       Otherwise make bit 'pin' 0 (pressed) and return true. */
-    (void)pin;   /* delete this line when you write your code */
-    return false;
+    if (pin >= INPUT_PIN_COUNT )
+    {
+        return false;
+    }
+    input_reg &= ~(1u << pin);
+    return true; 
 }
 
 bool input_release(uint8_t pin)
 {
-    /* TODO: invalid pin -> return false.
-     *       Otherwise make bit 'pin' 1 (released) and return true. */
-    (void)pin;   /* delete this line when you write your code */
-    return false;
+    if (pin >= INPUT_PIN_COUNT )
+    {
+        return false;
+    }
+    input_reg |= (1u << pin);
+    return true;
 }
+
 
 bool input_is_pressed(uint8_t pin)
 {
-    /* TODO: invalid pin -> return false.
-     *       Otherwise return true if bit 'pin' is 0 (pressed). */
-    (void)pin;   /* delete this line when you write your code */
-    return false;
+
+    if (pin >= INPUT_PIN_COUNT )
+    {
+        return false;
+    }
+    if ( (input_reg & (1u << pin)) == 0 )
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
