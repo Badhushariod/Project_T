@@ -50,6 +50,14 @@ int main(void)
             print_help();
         } else if (strcmp(cmd, "show") == 0){
             display_show(port_get());
+        } else if (strcmp(cmd, "set") == 0){
+            if (port_set_pin(pin)){
+                display_show(port_get());
+            }
+            else {
+                printf("error: no pin %d (valid pins: 0-7)\n", pin);
+            }
+            
         }
         /* TODO: add your commands here: show, set, clear, toggle, read */
         else {
