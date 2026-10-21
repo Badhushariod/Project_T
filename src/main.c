@@ -18,6 +18,16 @@ static void print_help(void)
     printf("  help       this list\n");
     printf("  quit       exit\n");
 }
+static bool is_valid_pin(int pin)
+{
+    if (pin < (int)PORT_PIN_COUNT  && pin >=0)
+    {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
 
 int main(void)
 {
@@ -72,17 +82,16 @@ int main(void)
                 printf("error: no pin %d (valid pins: 0-7)\n", pin);
             }
         } else if (strcmp(cmd, "read") == 0){
-            if (pin >= (int)PORT_PIN_COUNT  || pin <0)
-            {
+            if (!is_valid_pin(pin)){
                 printf("error: no pin %d (valid pins: 0-7)\n", pin);
-                continue;
             }
             else if (port_read_pin(pin)){
-                printf("LED %d is ON\n",pin);
-            }
+                    printf("LED %d is ON\n",pin);
+                }
             else {
-                printf("LED %d is OFF\n",pin);
-            }
+                    printf("LED %d is OFF\n",pin);
+                }
+
         } 
 
         /* TODO: add your commands here: show, set, clear, toggle, read */
