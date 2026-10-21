@@ -48,6 +48,8 @@ int main(void)
             break;
         } else if (strcmp(cmd, "help") == 0) {
             print_help();
+        } else if (strcmp(cmd, "show") == 0){
+            display_show(port_get());
         }
         /* TODO: add your commands here: show, set, clear, toggle, read */
         else {
