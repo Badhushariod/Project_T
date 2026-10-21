@@ -1,6 +1,18 @@
 CC     = gcc
 CFLAGS = -std=c11 -Wall -Wextra -Wpedantic -Isrc
 
+all: build/device.exe build/test_port.exe
+
+test: build/test_port.exe
+	./build/test_port.exe
+
+run: build/device.exe
+	./build/device.exe
+
+clean:
+	rm -rf build
+
+.PHONY: all test run clean
 
 build/device.exe: src/main.c src/port.c src/display.c src/port.h src/display.h
 	mkdir -p build
