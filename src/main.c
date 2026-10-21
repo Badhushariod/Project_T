@@ -61,25 +61,28 @@ int main(void)
         } else if (strcmp(cmd, "show") == 0){
             display_show(port_get());
         } else if (strcmp(cmd, "set") == 0){
-            if (port_set_pin(pin)){
-                display_show(port_get());
+            if (!is_valid_pin(pin)){
+                printf("error: no pin %d (valid pins: 0-7)\n", pin);
             }
             else {
-                printf("error: no pin %d (valid pins: 0-7)\n", pin);
+                port_set_pin(pin);
+                display_show(port_get());
             }
         } else if (strcmp(cmd, "clear") == 0){
-            if (port_clear_pin(pin)){
-                display_show(port_get());
+            if (!is_valid_pin(pin)){
+                printf("error: no pin %d (valid pins: 0-7)\n", pin);
             }
             else {
-                printf("error: no pin %d (valid pins: 0-7)\n", pin);
+                port_clear_pin(pin);
+                display_show(port_get());
             }
         } else if (strcmp(cmd, "toggle") == 0){
-            if (port_toggle_pin(pin)){
-                display_show(port_get());
+            if (!is_valid_pin(pin)){
+                printf("error: no pin %d (valid pins: 0-7)\n", pin);
             }
             else {
-                printf("error: no pin %d (valid pins: 0-7)\n", pin);
+                port_toggle_pin(pin);
+                display_show(port_get());
             }
         } else if (strcmp(cmd, "read") == 0){
             if (!is_valid_pin(pin)){
@@ -93,8 +96,6 @@ int main(void)
                 }
 
         } 
-
-        /* TODO: add your commands here: show, set, clear, toggle, read */
         else {
             printf("unknown command '%s' (type 'help')\n", cmd);
         }
