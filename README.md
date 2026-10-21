@@ -34,6 +34,12 @@ gcc -std=c11 -Wall -Wextra -Wpedantic exercises/00_toolchain/hello.c -o build/he
 ```
 Expected output: `Project_T: toolchain OK`
 
+## Run the LED simulator
+```
+gcc -std=c11 -Wall -Wextra -Wpedantic -Isrc src/main.c src/port.c src/display.c -o build/device.exe && ./build/device.exe
+```
+Type `help` for the commands, `quit` to exit.
+
 ## Run the tests
 ```
 gcc -std=c11 -Wall -Wextra -Wpedantic -Isrc src/port.c tests/test_port.c -o build/test_port.exe && ./build/test_port.exe
