@@ -9,19 +9,19 @@
 int main(void)
 {
     port_init();
-    printf("expected: PORT = 00000000\n");
+    printf("expected: PORT = 00000000   LEDs: [ . . . . . . . . ]\n");
     printf("actual:   ");
     display_show(port_get());
 
     port_set_pin(0);
     port_set_pin(2);
     port_set_pin(5);
-    printf("\nexpected: PORT = 00100101\n");
+    printf("\nexpected: PORT = 00100101   LEDs: [ . . * . . * . * ]\n");
     printf("actual:   ");
     display_show(port_get());
 
     port_set_pin(7);
-    printf("\nexpected: PORT = 10100101\n");
+    printf("\nexpected: PORT = 10100101   LEDs: [ * . * . . * . * ]\n");
     printf("actual:   ");
     display_show(port_get());
 
