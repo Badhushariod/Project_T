@@ -23,29 +23,44 @@ GCC 16.2.0 (MSYS2 UCRT64), GDB 18.1, GNU Make 4.4.1. Other recent versions
 should work. If a build behaves differently, note your version in
 `LEARNING_LOG.md`.
 
-## Build and run (from the project root)
+## Build, run and test (from the project root)
 All commands run in the **MSYS2 UCRT64** shell. If your terminal prompt starts
 with `PS` (PowerShell) or `C:\>` (cmd), type `./msys` (or `msys` in cmd)
 first to switch into it.
-```
-mkdir -p build
-gcc -std=c11 -Wall -Wextra -Wpedantic exercises/00_toolchain/hello.c -o build/hello.exe
-./build/hello.exe
-```
-Expected output: `Project_T: toolchain OK`
 
-## Run the LED simulator
-```
-gcc -std=c11 -Wall -Wextra -Wpedantic -Isrc src/main.c src/port.c src/display.c -o build/device.exe && ./build/device.exe
-```
-Type `help` for the commands, `quit` to exit.
+| Command      | What it does                                   |
+|--------------|------------------------------------------------|
+| `make`       | build the simulator and the tests              |
+| `make run`   | build if needed, then start the LED simulator  |
+| `make test`  | build if needed, then run the automated tests  |
+| `make clean` | delete the `build` folder                      |
 
-## Run the tests
+The code builds with **zero warnings** under `-std=c11 -Wall -Wextra -Wpedantic`.
+
+## The simulated device
+An 8-bit output port driving 8 LEDs, controlled from a command line:
 ```
-gcc -std=c11 -Wall -Wextra -Wpedantic -Isrc src/port.c tests/test_port.c -o build/test_port.exe && ./build/test_port.exe
+> set 2
+PORT = 00000100   LEDs: [ . . . . . * . . ]
+> toggle 0
+PORT = 00000101   LEDs: [ . . . . . * . * ]
+> read 2
+LED 2 is ON
+> set 9
+error: no pin 9 (valid pins: 0-7)
 ```
-Every check prints `PASS` or `FAIL`; the last line shows the total.
+Commands: `set N`, `clear N`, `toggle N`, `read N`, `show`, `help`, `quit`.
+
+## Project layout
+| Path | Purpose |
+|------|---------|
+| `src/port.c`, `src/port.h` | port "driver": set/clear/toggle/read bits, rejects invalid pins |
+| `src/display.c`, `src/display.h` | prints the port as bits and as an LED picture |
+| `src/main.c` | command line: reads commands, checks input, calls the port |
+| `tests/test_port.c` | 19 automated PASS/FAIL checks for the port module |
+| `exercises/` | small experiments from each lesson |
+| `LEARNING_LOG.md` | what was learned in each milestone |
 
 ## Milestones
 - [x] Milestone 0: Toolchain ready (4-stage build, error-message types)
-- [ ] Milestone 1: Simulated 8-LED output port (bit operations, CLI)
+- [x] Milestone 1: Simulated 8-LED output port (bit operations, validation, CLI, tests, make)

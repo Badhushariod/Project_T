@@ -1,9 +1,9 @@
 # Learning Log
 
 ## Current status
-- Milestone: 0 complete ✅ → next: Milestone 1 (simulated 8-LED output port)
+- Milestone: 1 complete ✅ → next: Milestone 2 (to be agreed)
 - GCC version: 16.2.0 (MSYS2 UCRT64)
-- Next task: Milestone 1, Lesson 1: bit operations on a simulated port register
+- Next task: start Milestone 2
 
 ## Starting assessment (2026-10-19)
 Background: Nuvoton, ESP, Keil. I know ISRs, direct register access and
@@ -65,3 +65,54 @@ my C code. "undefined reference" → the code (.c file or library) is not in the
 
 ### Open questions
 - How does an MCU's startup code prepare RAM before `main`? (MCU stage)
+
+## Milestone 1: Simulated 8-LED output port (completed 2026-10-21) ✅
+### Concepts introduced
+- Bit operations in real functions: set `|=`, clear `&= ~`, toggle `^=`, check `&`
+- Function parameters (the caller decides the value) and return values
+- Header (`.h`) = the promise, source (`.c`) = the code; include guards (`#ifndef`)
+- `static` outside a function = private to that file (the port register)
+- Reporting errors with a `bool` return, like a HAL's `HAL_OK` / `HAL_ERROR`
+- A read function must only look, never change anything
+- The off-by-one rule: with COUNT items, valid is 0..COUNT-1, so reject `>= COUNT`
+- Check input where it comes in, while it is still an `int`; cast only after checking
+- Signed vs unsigned compare in real code: `int pin` vs `8u` → use `(int)PORT_PIN_COUNT`
+- Count-down loops (`for (int pin = 7; pin >= 0; pin--)`)
+- Text input: `fgets` reads a line, `sscanf` splits it, `strcmp` returns 0 when equal
+- Write a rule once: `is_valid_pin()` in C, `CFLAGS` in the Makefile
+- `make`: target, ingredients, command (TAB!); rebuilds only when an ingredient is newer;
+  shortcut targets `all`, `test`, `run`, `clean` with `.PHONY`
+- `git diff` and `git restore` to undo unsaved changes
+
+### What I built
+- `src/port.c/.h`: the port driver (19/19 automated tests)
+- `src/display.c/.h`: `PORT = 00100101   LEDs: [ . . * . . * . * ]`
+- `src/main.c`: interactive command line (set, clear, toggle, read, show, help, quit)
+- `Makefile`: `make`, `make run`, `make test`, `make clean`
+
+### Bugs I made, found and fixed
+| Bug | How it showed up | Lesson |
+|---|---|---|
+| `1 << 7` instead of `1u << pin` | always set LED 7 | use the parameter, not a fixed number |
+| read used only the mask `(1u << pin)` | read 4 said true | a mask alone never looks at the port |
+| read used `\|=` | reading switched the LED on | a read must not change anything |
+| silent invalid pins | `set 8` did nothing, no error | return true/false and check it |
+| `pin > 8` instead of `>=` (twice) | pin 8 got through | the off-by-one rule |
+| `pin <= 0` | pin 0 was rejected | 0 is a valid pin |
+| ignored the return of `port_set_pin` | `set 9` printed no error | always use the return value |
+| `display_show(pin)`, then `display_show(0)` | show printed wrong or fixed values | use `port_get()`, the real value |
+| no check in main before converting | `set 258` turned on LED 2 | 258 → uint8_t = 2 (Q1 wrap-around) |
+| test rule with no ingredients | tests ran old code | `make` needs the right ingredients |
+
+### What I can explain without help
+- How set/clear/toggle/check work on a single bit
+- Why a function should report errors instead of failing silently
+- Why `make` says "up to date" and when it rebuilds
+
+### What I need to revise
+- Where a parameter's value comes from (the caller)
+- Boundaries: `>=` vs `>`, `<` vs `<=`
+- Habit: write the prediction down **before** running (still skipping it)
+
+### Open questions
+- `read` needs three answers (ON / OFF / invalid) but returns a bool. Better designs later?
