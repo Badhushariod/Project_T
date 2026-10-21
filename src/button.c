@@ -27,6 +27,15 @@ button_event_t button_poll(uint8_t button)
      *         down -> up   : BUTTON_EVENT_RELEASED
      *         no change    : BUTTON_EVENT_NONE
      *       and remember 'now' for the next poll. */
-    (void)now;   /* delete this line when you write your code */
-    return BUTTON_EVENT_NONE;
+    bool before = was_pressed[button];
+    was_pressed[button] = now;
+    if (!before && now){
+        return BUTTON_EVENT_PRESSED;
+    } 
+    else if (before && !now)  {
+        return BUTTON_EVENT_RELEASED;
+    }
+    else{
+        return BUTTON_EVENT_NONE;
+    }
 }
