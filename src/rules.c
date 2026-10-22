@@ -41,13 +41,11 @@ void rules_apply(uint8_t button, button_event_t event)
 
 void rules_poll_all(void)
 {
-    /* TODO 3: for every button 0..BUTTON_COUNT-1:
-     *           ask button_poll() for its event;
-     *           if the event is not BUTTON_EVENT_NONE, call rules_apply(). */
-    for (size_t i = 0; i < BUTTON_COUNT; i++){
-        button_event_t a= button_poll(i);
-        if (a != BUTTON_EVENT_NONE){
-            rules_apply(i,a);
+    
+    for (size_t i = 0; i < BUTTON_COUNT; i++){      /* every button */
+        button_event_t a= button_poll(i);           /* what happened?*/
+        if (a != BUTTON_EVENT_NONE){                /* something happened  */
+            rules_apply(i,a);                       /* → do what the table says */
         }
         
 
