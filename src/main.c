@@ -20,6 +20,7 @@ static void print_help(void)
     printf("  read N     is LED N on?\n");
     printf("  press N    Finger Down\n");
     printf("  release N  Finger UP\n");
+    printf("  tick N     time\n");
     printf("  show       show all LEDs\n");
     printf("  help       this list\n");
     printf("  quit       exit\n");
@@ -121,6 +122,16 @@ int main(void)
                 input_release(pin);           // 1. finger up on button N               */
                 rules_poll_all();            // 2. firmware checks the buttons and reacts */
                 display_show(port_get());    // 3. look at the LEDs
+            }
+        } else if(strcmp (cmd, "tick") == 0){
+            if (pin<=20 && pin >=1){
+                for (int i = 0; i < pin ; i++ ){
+                    rules_poll_all();            // 2. firmware checks the buttons and reacts */
+                    display_show(port_get());    // 3. look at the LEDs
+                }
+            }
+            else {
+                printf("provide a valid no. 1-20");
             }
         }
         else {
