@@ -131,7 +131,7 @@ int main(void)
                 }
             }
             else {
-                printf("provide a valid no. 1-20");
+                printf("provide a valid no. 1-20\n");
             }
         }
         else {
