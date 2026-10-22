@@ -1,9 +1,9 @@
 # Learning Log
 
 ## Current status
-- Milestone: 1 complete ✅ → next: Milestone 2 (to be agreed)
+- Milestone: 2 complete ✅ → next: Milestone 3 (to be agreed)
 - GCC version: 16.2.0 (MSYS2 UCRT64)
-- Next task: start Milestone 2
+- Next task: start Milestone 3
 
 ## Starting assessment (2026-10-19)
 Background: Nuvoton, ESP, Keil. I know ISRs, direct register access and
@@ -116,3 +116,64 @@ my C code. "undefined reference" → the code (.c file or library) is not in the
 
 ### Open questions
 - `read` needs three answers (ON / OFF / invalid) but returns a bool. Better designs later?
+
+## Milestone 2: Buttons (completed 2026-10-22) ✅
+### Concepts introduced
+- **Active low:** pull-up resistor plus a button to GND means released = 1 and pressed = 0
+- **World side vs firmware side:** `press`/`release` are the finger and only move the pin;
+  the firmware must discover the change by reading the pin
+- **A check only reads** (`&`); and use brackets when mixing `&` with `==`,
+  because `==` happens first
+- **Level vs event:** "is it down?" (`input_is_pressed`) vs "did it just go down?" (`button_poll`)
+- **Edge detection:** compare `before` with `now`, and remember `now` for the next poll
+  (a `static` array keeps values between calls)
+- **enum:** names for a set of choices (`BUTTON_EVENT_PRESSED`); they are numbers underneath
+- **struct:** a blueprint for several related fields. The rule is TYPE NAME = VALUE:
+  create a variable first (`Time_day x;`), then use `x.hour`
+- **Array of structs = a table:** `rules[i].led` means row i, column led;
+  `sizeof rules / sizeof rules[0]` = the number of rows
+- **Table (what) vs engine (how):** change behaviour by editing data, not code
+- **Parameters vs local variables:** `rules_apply` is GIVEN button and event;
+  `rules_poll_all` FINDS them
+- **Simulated time:** each command = one pass of the firmware loop; `tick N` = N passes
+- Every `.c` file must be in the build, otherwise the linker reports `undefined reference`
+- Windows locks a running `.exe` (`Permission denied`), so quit before rebuilding
+- `git restore` to undo an experiment
+
+### What I built
+- `src/input.c/.h`: active-low input port (17 tests)
+- `src/button.c/.h`: edge detection with a `button_event_t` enum (12 tests)
+- `src/rules.c/.h`: rule table (`rule_t` struct) + `rules_apply` + `rules_poll_all` (13 tests)
+- CLI commands `press N`, `release N`, `tick N`
+- `exercises/04_struct/struct_demo.c`: struct and array-of-structs practice
+
+### Bugs I made, found and fixed
+| Bug | How it showed up | Lesson |
+|---|---|---|
+| `is_pressed` used `^=` | asking about button 3 flipped button 3 | a check must only read |
+| `is_pressed` returned true for bit 1 | pressed/released backwards | active low: pressed = 0 |
+| `input_reg & (1u << pin) == 0` | always false | `==` before `&`: use brackets |
+| edge conditions called `input_press(BUTTON_COUNT)` | always NONE | use `before` and `now`, not the finger |
+| `Time_day.hour = 9` | compile error | a type is a blueprint: create a variable first |
+| `x[2]` holding 3 rows, loop to 3 | garbage `2:0:0` | N rows = indices 0..N-1; reading past the end |
+| `rules_apply(rules[i].button, ...)` in poll | wrong event, reads past the table | pass what happened (`i`, the event) |
+| `input_is_pressed` instead of `button_poll` | LED flickered every poll | level vs event (the "break it" experiment) |
+| missing `input_init()` | `press 0` lit LEDs 0, 1 and 7 | initialise every module at start-up |
+| simulator not linked with the new modules | `undefined reference` | the linker needs every `.c` |
+| `make` while the simulator was running | `Permission denied` | quit before rebuilding |
+| `tick` check `pin > 20 && pin < 1` | never true | bad = too small OR too big (`\|\|`) |
+
+### What I can explain without help
+- Why buttons read 0 when pressed
+- Why edge detection is needed (I saw the flicker myself)
+- Why a rule table is easier to change than a chain of `if`s
+
+### What I need to revise
+- Struct syntax: declaring a variable (TYPE NAME = VALUE) before using `.field`
+- Telling apart a table's fields (`rules[i].button`) and a function's parameters (`button`)
+- `&&` vs `||` in range checks
+- Good: in the flicker experiment I predicted before running. Keep doing that.
+
+### Open questions
+- A press shorter than one poll is missed. (Interrupts, later.)
+- Real buttons "bounce" for a few milliseconds when pressed. (Debouncing, in the timers milestone.)

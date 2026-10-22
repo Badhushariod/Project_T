@@ -38,29 +38,58 @@ first to switch into it.
 The code builds with **zero warnings** under `-std=c11 -Wall -Wextra -Wpedantic`.
 
 ## The simulated device
-An 8-bit output port driving 8 LEDs, controlled from a command line:
+An 8-LED output port and 8 active-low buttons, controlled from a command line.
+
+**LEDs directly:**
 ```
 > set 2
 PORT = 00000100   LEDs: [ . . . . . * . . ]
-> toggle 0
-PORT = 00000101   LEDs: [ . . . . . * . * ]
 > read 2
 LED 2 is ON
 > set 9
 error: no pin 9 (valid pins: 0-7)
 ```
-Commands: `set N`, `clear N`, `toggle N`, `read N`, `show`, `help`, `quit`.
+
+**Buttons, through the firmware rules:**
+```
+> press 0                  (button 0 = light switch for LED 0)
+PORT = 00000001   LEDs: [ . . . . . . . * ]
+> tick 3                   (time passes, finger still down: no flicker)
+PORT = 00000001   LEDs: [ . . . . . . . * ]
+PORT = 00000001   LEDs: [ . . . . . . . * ]
+PORT = 00000001   LEDs: [ . . . . . . . * ]
+> release 0
+PORT = 00000001   LEDs: [ . . . . . . . * ]
+> press 1                  (button 1 = LED 1 on while held)
+PORT = 00000011   LEDs: [ . . . . . . * * ]
+> release 1
+PORT = 00000001   LEDs: [ . . . . . . . * ]
+```
+Commands: `set N`, `clear N`, `toggle N`, `read N`, `press N`, `release N`,
+`tick N`, `show`, `help`, `quit`.
+
+How a button press flows through the code:
+```
+press N (the "finger") -> input register -> button_poll (edge detection)
+    -> event -> rules_apply (rule table) -> port (LEDs) -> display
+```
+`press`/`release` only move the simulated pin. The firmware has to discover
+the change itself, by polling, exactly as it would on a real board.
 
 ## Project layout
 | Path | Purpose |
 |------|---------|
-| `src/port.c`, `src/port.h` | port "driver": set/clear/toggle/read bits, rejects invalid pins |
-| `src/display.c`, `src/display.h` | prints the port as bits and as an LED picture |
-| `src/main.c` | command line: reads commands, checks input, calls the port |
-| `tests/test_port.c` | 19 automated PASS/FAIL checks for the port module |
+| `src/port.c/.h` | LED output port: set/clear/toggle/read bits, rejects invalid pins |
+| `src/input.c/.h` | button input port, active low (released = 1, pressed = 0) |
+| `src/button.c/.h` | edge detection: turns levels into PRESSED / RELEASED events |
+| `src/rules.c/.h` | rule table (array of structs): which button event drives which LED |
+| `src/display.c/.h` | prints the port as bits and as an LED picture |
+| `src/main.c` | command line: reads commands, checks input, runs the firmware poll |
+| `tests/` | 61 automated PASS/FAIL checks (port 19, input 17, button 12, rules 13) |
 | `exercises/` | small experiments from each lesson |
 | `LEARNING_LOG.md` | what was learned in each milestone |
 
 ## Milestones
 - [x] Milestone 0: Toolchain ready (4-stage build, error-message types)
 - [x] Milestone 1: Simulated 8-LED output port (bit operations, validation, CLI, tests, make)
+- [x] Milestone 2: Buttons (active-low input, edge detection, enum, struct rule table)
