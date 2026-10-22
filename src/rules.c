@@ -21,14 +21,22 @@ static const rule_t rules[] = {
 void rules_apply(uint8_t button, button_event_t event)
 {
     for (size_t i = 0; i < RULE_COUNT; i++) {
-        /* TODO 1: if rules[i] is for this 'button' AND this 'event' ...
-         * TODO 2: ... do its action on its LED:
-         *           ACTION_LED_ON     -> port_set_pin
-         *           ACTION_LED_OFF    -> port_clear_pin
-         *           ACTION_LED_TOGGLE -> port_toggle_pin            */
+        
+        if (button == rules[i].button && event ==rules[i].event)
+        {
+            led_action_t action = rules[i].action;
+            uint8_t  led = rules[i].led ;
+            if (action == ACTION_LED_ON){
+                port_set_pin(led);
+            }
+            else if (action == ACTION_LED_OFF){
+                port_clear_pin(led);
+            }
+            else{
+                port_toggle_pin(led);
+            }
+        }
     }
-    (void)button;   /* delete these two lines when you write your code */
-    (void)event;
 }
 
 void rules_poll_all(void)
@@ -36,4 +44,12 @@ void rules_poll_all(void)
     /* TODO 3: for every button 0..BUTTON_COUNT-1:
      *           ask button_poll() for its event;
      *           if the event is not BUTTON_EVENT_NONE, call rules_apply(). */
+    for (size_t i = 0; i < BUTTON_COUNT; i++){
+        button_event_t a= button_poll(i);
+        if (a != BUTTON_EVENT_NONE){
+            rules_apply(i,a);
+        }
+        
+
+    }
 }
