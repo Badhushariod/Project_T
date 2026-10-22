@@ -118,7 +118,7 @@ int main(void)
                 printf("error: no pin %d (valid pins: 0-7)\n", pin);
             }
             else{
-                input_release(pin);            // 1. finger down on button N               */
+                input_release(pin);           // 1. finger up on button N               */
                 rules_poll_all();            // 2. firmware checks the buttons and reacts */
                 display_show(port_get());    // 3. look at the LEDs
             }
