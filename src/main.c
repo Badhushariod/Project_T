@@ -6,6 +6,10 @@
 #include <string.h>
 #include "port.h"
 #include "display.h"
+#include "input.h"
+#include "rules.h"
+
+
 
 static void print_help(void)
 {
@@ -14,6 +18,8 @@ static void print_help(void)
     printf("  clear N    LED N off\n");
     printf("  toggle N   flip LED N\n");
     printf("  read N     is LED N on?\n");
+    printf("  press N    Finger Down\n");
+    printf("  release N  Finger UP\n");
     printf("  show       show all LEDs\n");
     printf("  help       this list\n");
     printf("  quit       exit\n");
@@ -36,6 +42,9 @@ int main(void)
     int  pin;           /* the number after the word, e.g. 2            */
 
     port_init();
+    input_init();
+    button_init();
+
     printf("Project_T LED simulator. Type 'help' for commands.\n");
 
     while (1) {
@@ -95,7 +104,25 @@ int main(void)
                     printf("LED %d is OFF\n",pin);
                 }
 
-        } 
+        } else if (strcmp (cmd, "press") == 0){
+            if (!is_valid_pin(pin)){
+                printf("error: no pin %d (valid pins: 0-7)\n", pin);
+            }
+            else{
+                input_press(pin);            // 1. finger down on button N               */
+                rules_poll_all();            // 2. firmware checks the buttons and reacts */
+                display_show(port_get());    // 3. look at the LEDs
+            }
+        } else if (strcmp (cmd, "release") == 0){
+            if (!is_valid_pin(pin)){
+                printf("error: no pin %d (valid pins: 0-7)\n", pin);
+            }
+            else{
+                input_release(pin);            // 1. finger down on button N               */
+                rules_poll_all();            // 2. firmware checks the buttons and reacts */
+                display_show(port_get());    // 3. look at the LEDs
+            }
+        }
         else {
             printf("unknown command '%s' (type 'help')\n", cmd);
         }
