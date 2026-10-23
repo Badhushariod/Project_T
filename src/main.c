@@ -11,6 +11,24 @@
 #include "mode.h"
 
 
+static void print_mode(void)
+{
+    device_mode_t current_mode = mode_get();
+    switch (current_mode){
+        case (MODE_OFF):
+            printf(" Current mode is OFF\n");
+            break;
+        case (MODE_NORMAL):
+            printf(" Current mode is NORMAL\n");
+            break;
+        case (MODE_TEST):
+            printf(" Current mode is TEST\n");
+            break;
+        default :
+            printf(" Current mode is Invalid\n");
+            break;
+    }
+}
 
 static void print_help(void)
 {
@@ -21,10 +39,12 @@ static void print_help(void)
     printf("  read N     is LED N on?\n");
     printf("  press N    Finger Down\n");
     printf("  release N  Finger UP\n");
+    printf("  mode       current mode\n");
     printf("  tick N     time\n");
     printf("  show       show all LEDs\n");
     printf("  help       this list\n");
     printf("  quit       exit\n");
+    
 }
 static bool is_valid_pin(int pin)
 {
@@ -135,6 +155,8 @@ int main(void)
             else {
                 printf("provide a valid no. 1-20\n");
             }
+        } else if (strcmp (cmd , "mode") ==0 ){
+            print_mode();
         }
         else {
             printf("unknown command '%s' (type 'help')\n", cmd);
