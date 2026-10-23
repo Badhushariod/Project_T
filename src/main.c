@@ -40,6 +40,7 @@ static void print_help(void)
     printf("  press N    Finger Down\n");
     printf("  release N  Finger UP\n");
     printf("  mode       current mode\n");
+    printf("  fault N    (experiment) corrupt the mode with value N\n");
     printf("  tick N     time\n");
     printf("  show       show all LEDs\n");
     printf("  help       this list\n");
@@ -157,6 +158,11 @@ int main(void)
             }
         } else if (strcmp (cmd , "mode") ==0 ){
             print_mode();
+        } else if (strcmp(cmd, "fault") == 0) {
+            /* EXPERIMENT ONLY: overwrite the mode the way a memory bug would.
+             * No range check on purpose: a real memory bug doesn't check either. */
+            mode_inject_fault(pin);
+            printf("fault: mode overwritten with %d\n", pin);
         }
         else {
             printf("unknown command '%s' (type 'help')\n", cmd);
