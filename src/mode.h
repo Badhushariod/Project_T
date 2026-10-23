@@ -49,4 +49,11 @@ void mode_handle_event(uint8_t button, button_event_t event);
  */
 void mode_poll_all(void);
 
+/*
+ * FOR TESTS AND EXPERIMENTS ONLY: overwrite the state variable with any raw
+ * value, the way a memory bug would (e.g. 5, which is not a mode).
+ * Real firmware would not ship with this.
+ */
+void mode_inject_fault(int raw_value);
+
 #endif /* MODE_H */

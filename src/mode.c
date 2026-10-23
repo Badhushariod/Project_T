@@ -38,8 +38,15 @@ void mode_handle_event(uint8_t button, button_event_t event)
             case MODE_OFF :
                 mode = MODE_NORMAL;
                 break;
-            
+            default:
+                mode = MODE_OFF;
+                for (uint8_t i=0;i<PORT_PIN_COUNT;i++){
+                    port_clear_pin(i);
+                }  
+                break;
         }
+            
+            
     }
     else {
         if (mode == MODE_NORMAL)
@@ -61,4 +68,10 @@ void mode_poll_all(void)
 
     }
 }
+}
+
+/* FOR TESTS AND EXPERIMENTS ONLY (see mode.h). */
+void mode_inject_fault(int raw_value)
+{
+    mode = (device_mode_t)raw_value;
 }

@@ -8,6 +8,7 @@
  *   Part A: transitions (does the mode change correctly?)
  *   Part B: actions     (do the LEDs do the right thing in each mode?)
  *   Part C: polling     (real button presses through button_poll)
+ *   Part D: fault       (a corrupted state variable must not get stuck)
  */
 #include <stdio.h>
 #include "port.h"
@@ -194,6 +195,20 @@ static void test_poll_rules_in_normal(void)
     check_leds("C: poll in NORMAL: press 0 -> LED 0 on", 0x01);
 }
 
+/* ---- Part D: fault recovery ---- */
+
+static void test_fault_recovery(void)
+{
+    start();
+    press_mode();                   /* TEST: all LEDs on                    */
+    mode_inject_fault(5);           /* RAM corrupted: 5 is not a mode       */
+    press_mode();
+    check_mode("D: bad mode 5 + press 7 -> OFF (safe state)", MODE_OFF);
+    check_leds("D: bad mode 5 + press 7 -> all LEDs off", 0x00);
+    press_mode();
+    check_mode("D: after recovery, press 7 -> NORMAL again", MODE_NORMAL);
+}
+
 int main(void)
 {
     test_start_mode();
@@ -209,6 +224,8 @@ int main(void)
 
     test_poll_mode_button();
     test_poll_rules_in_normal();
+
+    test_fault_recovery();
 
     printf("\nResult: %d/%d passed\n", tests_run - tests_failed, tests_run);
     return (tests_failed == 0) ? 0 : 1;
