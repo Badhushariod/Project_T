@@ -20,18 +20,6 @@ device_mode_t mode_get(void)
 
 void mode_handle_event(uint8_t button, button_event_t event)
 {
-    /* TODO step A - transitions:
-     *     A PRESS of MODE_BUTTON moves to the next mode:
-     *         NORMAL -> TEST -> OFF -> NORMAL
-     *     Every other event leaves the mode as it is.
-     *
-     * TODO step B - actions:
-     *     entering TEST: all LEDs on
-     *     entering OFF:  all LEDs off
-     *     in NORMAL:     events of the other buttons go to rules_apply()
-     *     in TEST, OFF:  the other buttons do nothing
-     */
-
     if (button == MODE_BUTTON && event == BUTTON_EVENT_PRESSED)
     {
         switch(mode){
@@ -65,15 +53,12 @@ void mode_handle_event(uint8_t button, button_event_t event)
 
 void mode_poll_all(void)
 {
-    /* TODO step C:
-     *     poll every button once (button_poll) and pass each event
-     *     that is not NONE to mode_handle_event(). */
     for (size_t i = 0; i < BUTTON_COUNT; i++){      /* every button */
         button_event_t a= button_poll(i);           /* what happened?*/
         if (a != BUTTON_EVENT_NONE){                /* something happened  */
-            mode_handle_event(i,a);                       /* → do what the table says */
-        }
+            mode_handle_event(i,a);                      
         
 
     }
+}
 }
