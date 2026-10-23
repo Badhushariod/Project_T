@@ -1,13 +1,14 @@
 CC     = gcc
 CFLAGS = -std=c11 -Wall -Wextra -Wpedantic -Isrc
 
-all: build/device.exe build/test_port.exe build/test_input.exe build/test_button.exe build/test_rules.exe
+all: build/device.exe build/test_port.exe build/test_input.exe build/test_button.exe build/test_rules.exe build/test_mode.exe
 
-test: build/test_port.exe build/test_input.exe build/test_button.exe build/test_rules.exe
+test: build/test_port.exe build/test_input.exe build/test_button.exe build/test_rules.exe build/test_mode.exe
 	./build/test_port.exe
 	./build/test_input.exe
 	./build/test_button.exe
 	./build/test_rules.exe
+	./build/test_mode.exe
 
 run: build/device.exe
 	./build/device.exe
@@ -17,9 +18,9 @@ clean:
 
 .PHONY: all test run clean
 
-build/device.exe: src/main.c src/port.c src/display.c src/input.c src/button.c src/rules.c src/port.h src/display.h src/input.h src/button.h src/rules.h
+build/device.exe: src/main.c src/port.c src/display.c src/input.c src/button.c src/rules.c src/mode.c src/port.h src/display.h src/input.h src/button.h src/rules.h src/mode.h
 	mkdir -p build
-	$(CC) $(CFLAGS) src/main.c src/port.c src/display.c src/input.c src/button.c src/rules.c -o build/device.exe
+	$(CC) $(CFLAGS) src/main.c src/port.c src/display.c src/input.c src/button.c src/rules.c src/mode.c -o build/device.exe
 
 build/test_port.exe: tests/test_port.c src/port.c src/port.h
 	mkdir -p build
@@ -36,3 +37,7 @@ build/test_button.exe: tests/test_button.c src/button.c src/button.h src/input.c
 build/test_rules.exe: tests/test_rules.c src/rules.c src/rules.h src/button.c src/button.h src/input.c src/input.h src/port.c src/port.h
 	mkdir -p build
 	$(CC) $(CFLAGS) src/rules.c src/button.c src/input.c src/port.c tests/test_rules.c -o build/test_rules.exe
+
+build/test_mode.exe: tests/test_mode.c src/mode.c src/mode.h src/rules.c src/rules.h src/button.c src/button.h src/input.c src/input.h src/port.c src/port.h
+	mkdir -p build
+	$(CC) $(CFLAGS) src/mode.c src/rules.c src/button.c src/input.c src/port.c tests/test_mode.c -o build/test_mode.exe

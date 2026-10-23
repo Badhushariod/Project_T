@@ -1,9 +1,9 @@
 # Learning Log
 
 ## Current status
-- Milestone: 2 complete ✅ → next: Milestone 3 (to be agreed)
+- Milestone: 3 in progress (device modes: a state machine)
 - GCC version: 16.2.0 (MSYS2 UCRT64)
-- Next task: start Milestone 3
+- Next task: Lesson 3.1, state machine concept and warm-up exercise
 
 ## Starting assessment (2026-10-19)
 Background: Nuvoton, ESP, Keil. I know ISRs, direct register access and
