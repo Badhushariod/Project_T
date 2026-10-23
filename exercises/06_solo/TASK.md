@@ -40,10 +40,17 @@ void    traffic_inject_fault(int raw_value);         /* TEST ONLY: corrupt state
 Everything else is your decision: where the state is stored, how the code
 is structured, and the comments.
 
+## The 5 questions (ask them before writing any code)
+| # | Question | Where to look |
+|---|---|---|
+| 1 | What should happen? | the behaviour table above |
+| 2 | Whose job is it? | which file, which function does each part belong in? |
+| 3 | What does it get, remember, change? | parameters (gets), `static` variables (remembers), what it modifies (changes) |
+| 4 | Write the steps in words | as comments inside the function |
+| 5 | Translate to C, then test | one small step at a time; compile, run, read the output |
+
 ## Rules
-1. **Before coding:** answer the 5 questions as comments at the top of
-   `traffic.c` (what should happen, whose job, gets / remembers / changes,
-   the steps in words).
+1. **Before coding:** answer questions 1-4 as comments in `traffic.c`.
 2. **Before running the tests:** write down how many of the 11 checks you
    expect to pass.
 3. **Stuck for more than 10 minutes on one thing?** Write down what you are
