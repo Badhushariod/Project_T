@@ -1,9 +1,9 @@
 # Learning Log
 
 ## Current status
-- Milestone: 3 in progress (device modes: a state machine)
+- Milestone: 3 complete ✅ → next: Milestone 4 (timers and non-blocking code, to be agreed)
 - GCC version: 16.2.0 (MSYS2 UCRT64)
-- Next task: Lesson 3.1, state machine concept and warm-up exercise
+- Next task: start Milestone 4
 
 ## Starting assessment (2026-10-19)
 Background: Nuvoton, ESP, Keil. I know ISRs, direct register access and
@@ -177,3 +177,89 @@ my C code. "undefined reference" → the code (.c file or library) is not in the
 ### Open questions
 - A press shorter than one poll is missed. (Interrupts, later.)
 - Real buttons "bounce" for a few milliseconds when pressed. (Debouncing, in the timers milestone.)
+
+## Milestone 3: Device modes, a state machine (completed 2026-10-23) ✅
+### Concepts introduced
+- **State machine:** the same event can mean different things depending on
+  what the device is doing (AC remote MODE button, microwave START button)
+- **The four words:** state = where the device is now (NORMAL);
+  event = what happened (button 7 PRESSED); transition = the state changes
+  (`mode = MODE_TEST;`); action = what the device does (all LEDs on)
+- **One enum variable, not several bools:** bools allow impossible
+  combinations (cool AND heat); one variable holds exactly one state
+- **switch / case / break:** `switch` asks "which state am I in?";
+  forgetting `break` runs into the next case
+- **Entering a state vs being in it:** entering TEST = all LEDs on (once);
+  being in NORMAL = button presses go to the rule table
+- **Postman vs receptionist:** `mode_poll_all` FINDS events and delivers all
+  of them; `mode_handle_event` is GIVEN one event and decides
+- **Only one poller:** an edge is used up by the first `button_poll` call,
+  so a second poller in the same pass sees NONE
+- **Read top-down, build bottom-up**, and the 5 questions before coding:
+  what should happen, whose job (check the `.h`), what it gets / remembers /
+  changes, the steps in words as comments, then C and test
+- **An enum variable can hold any number:** `device_mode_t m = 5;` compiles
+  with no warning; C never checks at run time
+- **Stuck state:** a bad value matches no case, so the device ignores
+  everything forever, silently
+- **`default:`** catches "any value not listed"; recover to a **safe
+  state**: known (mode and LEDs agree) and safe (outputs off)
+- **Fault injection:** a test-only hook (`mode_inject_fault`) proves the
+  recovery works; write the test first, then the fix
+- **Debug output must tell the truth:** never print "OFF" for an invalid mode
+- Warnings such as "unused variable" / "defined but not used" are clues of
+  unfinished work
+
+### What I built
+- `exercises/05_state/ac_demo.c`: AC remote state machine (MODE and ▲ buttons)
+- `src/mode.c/.h`: NORMAL → TEST → OFF state machine with safe-state
+  recovery (22 tests: transitions, actions, polling, fault)
+- CLI: `main.c` runs the firmware through `mode_poll_all`; new commands
+  `mode` (inspect the state) and `fault N` (experiment)
+
+### Bugs I made, found and fixed
+| Bug | How it showed up | Lesson |
+|---|---|---|
+| trailing `\` after a function header | worked by luck | a backslash glues the next line on |
+| "entering NORMAL toggles LED 0" | design table | entering a state vs being in it |
+| `mode_poll_all` written in `rules.c` | would be "multiple definition" | a function lives in its own module's `.c` |
+| both `rules_poll_all` and `mode_poll_all` in main | second poller would see NONE | only one poller; the first uses up the edge |
+| poller passed only button 7, invented `changemode()` | other buttons would never reach the rules | the postman delivers, the receptionist decides |
+| `printf` in `mode.c` | `implicit declaration` (no stdio.h) | logic modules don't print |
+| function body written in `mode.h` | caught before saving | the header is only the promise |
+| missing `;` after `port_set_pin(i)` | `expected ';' before '}'` | read the line and column |
+| `else` without the NORMAL check | 12/19: in TEST, press 0 toggled LED 0 | TEST and OFF must ignore buttons |
+| tidy-up deleted a `}` | `expected declaration or statement at end of input` | count the braces in the last edited function |
+| extra `}` after `default:` | `expected identifier or '(' before 'else'` | the error points below the real mistake |
+| `default:` set OFF but left the LEDs on | 21/22: mode OFF, LEDs 11111111 | a safe state needs mode AND outputs |
+| main called `mode_handle_event()` | `too few arguments` | given (handle) vs finds (poll) |
+| TEST printed as "ON", invalid printed as "OFF" | debug output lied | reports must use the code's names and the truth |
+
+### What I can explain without help
+- Why the same button needs to do different things in different modes
+- State, event and action, with examples from my device
+- Why OFF is the safe state: it is known and safe
+- Why an enum variable can hold an undefined value
+- My 9-step prediction for the mode cycle was 9/9 correct
+
+### What I need to revise
+- **Transition vs event:** the event is the cause (button 7 pressed); the
+  transition is the state change (`mode = MODE_TEST;`)
+- **Which module does what:** "held = no new event" is edge detection in `button.c`, not `mode.c`
+- **Given vs finds** (`_handle_event` / `_apply` vs `_poll_all`): mixed up for the second time
+- **Braces and indentation:** two brace bugs this milestone
+- **Prediction habit:** skipped 3 times. When I did predict, I was right.
+  Write the prediction BEFORE running.
+
+### Optional tidy-ups (style, not bugs)
+- The "all LEDs off" loop appears twice in `mode.c` (TEST case and
+  `default:`); write it once as a small `static` function
+- The closing `}` of the `if` in `mode_poll_all` is at the end of the file
+  instead of under the `if`
+- `size_t i` in `mode_poll_all` without `<stddef.h>`; `uint8_t i` matches `button_poll`
+
+### Open questions
+- `default:` only runs when button 7 is pressed; until then a bad value
+  stays. Could the firmware check every poll? (Fault detection and watchdogs, later)
+- If I add a new mode to the enum later, will the compiler remind me to handle it?
+- TEST → OFF forgets the NORMAL LEDs. Should leaving TEST restore them?
