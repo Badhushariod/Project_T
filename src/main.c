@@ -8,6 +8,7 @@
 #include "display.h"
 #include "input.h"
 #include "rules.h"
+#include "mode.h"
 
 
 
@@ -45,6 +46,7 @@ int main(void)
     port_init();
     input_init();
     button_init();
+    mode_init();
 
     printf("Project_T LED simulator. Type 'help' for commands.\n");
 
@@ -111,7 +113,7 @@ int main(void)
             }
             else{
                 input_press(pin);            // 1. finger down on button N               */
-                rules_poll_all();            // 2. firmware checks the buttons and reacts */
+                mode_poll_all();            // 2. firmware checks the buttons and reacts */
                 display_show(port_get());    // 3. look at the LEDs
             }
         } else if (strcmp (cmd, "release") == 0){
@@ -120,13 +122,13 @@ int main(void)
             }
             else{
                 input_release(pin);           // 1. finger up on button N               */
-                rules_poll_all();            // 2. firmware checks the buttons and reacts */
+                mode_poll_all();            // 2. firmware checks the buttons and reacts */
                 display_show(port_get());    // 3. look at the LEDs
             }
         } else if(strcmp (cmd, "tick") == 0){
             if (pin<=20 && pin >=1){
                 for (int i = 0; i < pin ; i++ ){
-                    rules_poll_all();            // 2. firmware checks the buttons and reacts */
+                    mode_poll_all();            // 2. firmware checks the buttons and reacts */
                     display_show(port_get());    // 3. look at the LEDs
                 }
             }
