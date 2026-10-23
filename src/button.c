@@ -22,11 +22,7 @@ button_event_t button_poll(uint8_t button)
 
     bool now = input_is_pressed(button);
 
-    /* TODO: compare 'now' with was_pressed[button]:
-     *         up   -> down : BUTTON_EVENT_PRESSED
-     *         down -> up   : BUTTON_EVENT_RELEASED
-     *         no change    : BUTTON_EVENT_NONE
-     *       and remember 'now' for the next poll. */
+
     bool before = was_pressed[button];
     was_pressed[button] = now;
     if (!before && now){

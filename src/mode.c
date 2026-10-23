@@ -32,10 +32,35 @@ void mode_handle_event(uint8_t button, button_event_t event)
      *     in TEST, OFF:  the other buttons do nothing
      */
 
-    /* '(void)x;' only silences the "unused parameter" warning.
-     * Delete these two lines once you use button and event. */
-    (void)button;
-    (void)event;
+    if (button == MODE_BUTTON && event == BUTTON_EVENT_PRESSED)
+    {
+        switch(mode){
+            case MODE_NORMAL :
+                mode = MODE_TEST ;   
+                for (uint8_t i=0;i<PORT_PIN_COUNT;i++){
+                    port_set_pin(i);
+                }           
+                break;
+            case (MODE_TEST):
+                mode = MODE_OFF;
+                for (uint8_t i=0;i<PORT_PIN_COUNT;i++){
+                    port_clear_pin(i);
+                }     
+                break;
+            case MODE_OFF :
+                mode = MODE_NORMAL;
+                break;
+            
+        }
+    }
+    else {
+        if (mode == MODE_NORMAL)
+        {
+            rules_apply(button,event);
+        }
+    }
+
+
 }
 
 void mode_poll_all(void)
@@ -43,4 +68,12 @@ void mode_poll_all(void)
     /* TODO step C:
      *     poll every button once (button_poll) and pass each event
      *     that is not NONE to mode_handle_event(). */
+    for (size_t i = 0; i < BUTTON_COUNT; i++){      /* every button */
+        button_event_t a= button_poll(i);           /* what happened?*/
+        if (a != BUTTON_EVENT_NONE){                /* something happened  */
+            mode_handle_event(i,a);                       /* → do what the table says */
+        }
+        
+
+    }
 }
