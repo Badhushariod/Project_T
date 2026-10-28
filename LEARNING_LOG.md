@@ -3,7 +3,7 @@
 ## Current status
 - Milestone: 3 complete ✅ → next: Milestone 4 (timers and non-blocking code, to be agreed)
 - GCC version: 16.2.0 (MSYS2 UCRT64)
-- Next task: start Milestone 4
+- Next task: fix Solo 1 (exercises/06_solo) to 11/11, then pass Solo 2 (the gate before Milestone 4)
 
 ## Starting assessment (2026-10-19)
 Background: Nuvoton, ESP, Keil. I know ISRs, direct register access and
@@ -263,3 +263,27 @@ my C code. "undefined reference" → the code (.c file or library) is not in the
   stays. Could the firmware check every poll? (Fault detection and watchdogs, later)
 - If I add a new mode to the enum later, will the compiler remind me to handle it?
 - TEST → OFF forgets the NORMAL LEDs. Should leaving TEST restore them?
+
+## Solo exercise 1: pedestrian crossing light (2026-10-23, reviewed 2026-10-28)
+Goal: measure what I can build alone (`exercises/06_solo/TASK.md`).
+**Score: 4.5 / 10. Tests: 0/11** (it did not build). Fix by fix:
+missing function → 4/11, break → 8/11, fault handling → 11/11.
+
+### What I did alone
+- Both files from a blank page; enums and all 4 prototypes correct
+- The state in one `static` variable in the `.c`; init and get correct
+- A switch-based state machine with my own design (switch on the event)
+
+### Mistakes to study
+| # | Mistake | Rule |
+|---|---|---|
+| 1 | `traffic_inject_fault` promised in `.h`, never written → linker: `undefined reference` | every prototype is a promise; tick off the `.h` against the `.c` |
+| 2 | `break` only inside the `else` → GREEN + BUTTON fell through into TICK → RED | a case label is an entry point, not a wall; `break` at the end of every case |
+| 3 | no fault handling; the switch was on `event`, but `light` is what gets corrupted | `default:` must be on the stored state; switch on the state first |
+| 4 | header: no include guard; unused includes and `#define LED` | every header gets a guard; include only what its users need |
+| 5 | the last case had no `break` | keep the habit |
+| 6 | never compiled; no 5-question comments; no prediction | the compiler had already caught #1 and #2: compile early and often |
+
+### Gate before Milestone 4
+Solo 2 (a new problem) done alone in 45 minutes or less, all tests passing,
+zero warnings, with the 5-question comments and a written prediction.
