@@ -3,7 +3,8 @@
 ## Current status
 - Milestone: 3 complete ✅ → next: Milestone 4 (timers and non-blocking code, to be agreed)
 - GCC version: 16.2.0 (MSYS2 UCRT64)
-- Next task: fix Solo 1 (exercises/06_solo) to 11/11, then pass Solo 2 (the gate before Milestone 4)
+- Solo 1 fixed and rebuilt alone: 11/11, zero warnings ✅
+- Next task: pass Solo 2, a new problem done alone (the gate before Milestone 4)
 
 ## Starting assessment (2026-10-19)
 Background: Nuvoton, ESP, Keil. I know ISRs, direct register access and
@@ -284,6 +285,31 @@ missing function → 4/11, break → 8/11, fault handling → 11/11.
 | 5 | the last case had no `break` | keep the habit |
 | 6 | never compiled; no 5-question comments; no prediction | the compiler had already caught #1 and #2: compile early and often |
 
+### Fix: worked example, then rebuilt alone (2026-10-28 to 2026-11-02)
+- Fixing it alone was too hard, so Claude built it as a worked example in
+  two compiled steps (empty `handle_event` → 3/11, then the switch → 11/11)
+  and explained it one step at a time. I wrote the RED case and `default:`
+  myself from the recipe.
+- Then I deleted both files and rebuilt them from a blank page using my
+  notes: **11/11, zero warnings, prediction right.** Time: not timed.
+- The compiler caught `break` inside the `if` again
+  (`this statement may fall through`). I read the warning and fixed it myself.
+
+### What I got wrong in the walkthrough (revise these)
+| Question | My answer | Right answer |
+|---|---|---|
+| What does `test_green` leave behind? | GREEN | YELLOW: the static remembers leftovers, and `init` wipes them |
+| `traffic_get()` after `inject_fault(9)`? | RED | 9: `get` only looks; only `handle_event` changes it |
+| `break` inside the `if`, with GREEN + TICK? | "stuck in a loop" | a switch is not a loop; the false `if` skips the `break`, so it falls into YELLOW → RED |
+| Why switch on `light`? | unclear | `default:` only sees the value in `switch( )`, and the 9 is in `light` |
+| Which header gives `uint8_t`? | `<stdio.h>` | `<stdint.h>`: the name tells you |
+
+### Rules I'm keeping
+- `break` goes outside the `if`, so it runs on every path
+- In `default:`, go to the safe state with no `if`
+- Write the questions in short form, one line each. Improvise while
+  coding, then tick the lines off at the end.
+
 ### Gate before Milestone 4
 Solo 2 (a new problem) done alone in 45 minutes or less, all tests passing,
-zero warnings, with the 5-question comments and a written prediction.
+zero warnings, with the short Q1–Q4 comments and a written prediction.
