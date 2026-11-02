@@ -143,3 +143,5 @@ the change itself, by polling, exactly as it would on a real board.
 - [x] Milestone 1: Simulated 8-LED output port (bit operations, validation, CLI, tests, make)
 - [x] Milestone 2: Buttons (active-low input, edge detection, enum, struct rule table)
 - [x] Milestone 3: Device modes (state machine with switch/enum, safe-state recovery, fault injection)
+- [ ] Milestone 4: Memory, theory first, then practice (plan: `notes/memory/PLAN.md`)
+- [ ] Milestone 5: Timers and non-blocking code

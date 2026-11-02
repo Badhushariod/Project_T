@@ -1,10 +1,11 @@
 # Learning Log
 
 ## Current status
-- Milestone: 3 complete ✅ → next: Milestone 4 (timers and non-blocking code, to be agreed)
+- Milestone: 3 complete ✅ → now: **Milestone 4, Memory (theory first)**; plan in `notes/memory/PLAN.md`
+- Milestone 5 will be timers and non-blocking code (moved back from 4)
 - GCC version: 16.2.0 (MSYS2 UCRT64)
-- Solo 1 fixed and rebuilt alone: 11/11, zero warnings ✅
-- Next task: pass Solo 2, a new problem done alone (the gate before Milestone 4)
+- Solo 1: 11/11 ✅ · Solo 2: 18/18, zero warnings ✅ (gate passed on skill; 60 min vs the 45 limit)
+- Next task: Lesson 4.1, bits, bytes and addresses
 
 ## Starting assessment (2026-10-19)
 Background: Nuvoton, ESP, Keil. I know ISRs, direct register access and
@@ -313,3 +314,31 @@ missing function → 4/11, break → 8/11, fault handling → 11/11.
 ### Gate before Milestone 4
 Solo 2 (a new problem) done alone in 45 minutes or less, all tests passing,
 zero warnings, with the short Q1–Q4 comments and a written prediction.
+
+## Solo exercise 2: microwave oven (2026-11-02)
+Goal: the gate before Milestone 4 (`exercises/07_solo2/TASK.md`).
+**Tests: 18/18, zero warnings. Time: 60 minutes (12:15–13:15, limit 45).
+Gate: 4 of 5 rules met ✅ (passed on skill, time missed).**
+
+### What I did alone
+- Both files from a blank page, with `<stdbool.h>` in the header because it uses `bool`
+- `switch (state)` with a `break` outside every `if`, and `if / else if` for
+  COOKING's two transitions (a pattern I hadn't used before)
+- `default:` → IDLE with no `if`. The heater is on only when `state == MW_COOKING`,
+  so it is safe for an unknown value
+- Q1–Q4 comments written before coding. Prediction 18/18 was right, but I
+  only wrote it after the review asked for it
+
+### Mistakes to study
+| # | Mistake | Rule |
+|---|---|---|
+| 1 | Called `microwave_heater_on();` after `state = MW_COOKING`, thinking it turns the heater on | a function that returns a value only answers a question; if the answer is thrown away, the line does nothing. The heater is on *because* the state is COOKING |
+| 2 | `default:` without `break` (again: Solo 1 #5) | a `break` at the end of every case, even the last one |
+| 3 | Q4 described the behaviour, not the code | Q4 is the code outline: switch → if / else if → break → default |
+| 4 | 60 minutes, not 45; predictions skipped until asked | speed comes with practice; a prediction is just two numbers (passes, warnings) |
+
+### Decision: the roadmap changed
+Milestone 4 is now **Memory**: all 21 theory lessons first, then the practice
+(`notes/memory/PLAN.md`). Every term gets a definition and a real example.
+The goal is to be able to teach it. Timers move to Milestone 5. Solo 3 (the
+45-minute retry) comes at the end of Milestone 4.
