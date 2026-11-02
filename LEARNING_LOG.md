@@ -5,7 +5,7 @@
 - Milestone 5 will be timers and non-blocking code (moved back from 4)
 - GCC version: 16.2.0 (MSYS2 UCRT64)
 - Solo 1: 11/11 ✅ · Solo 2: 18/18, zero warnings ✅ (gate passed on skill; 60 min vs the 45 limit)
-- Next task: Lesson 4.1, bits, bytes and addresses
+- Lesson 4.1 done ✅ (handbook page 1). Next task: Lesson 4.2, kinds of memory
 
 ## Starting assessment (2026-10-19)
 Background: Nuvoton, ESP, Keil. I know ISRs, direct register access and
@@ -342,3 +342,19 @@ Milestone 4 is now **Memory**: all 21 theory lessons first, then the practice
 (`notes/memory/PLAN.md`). Every term gets a definition and a real example.
 The goal is to be able to teach it. Timers move to Milestone 5. Solo 3 (the
 45-minute retry) comes at the end of Milestone 4.
+
+## Milestone 4: Memory (in progress)
+My handbook, in my own words: `notes/memory/handbook/`
+
+### Lesson 4.1: bits, bytes and addresses (2026-11-02) ✅
+- All 6 steps, 19/19 checks (one retry). Teach-back → handbook page 1
+  (`notes/memory/handbook/4.1_bits_bytes_addresses.md`)
+- Slips to watch:
+  - Wrote "only LED 4 on" as active low (`0b11101111`). `port_out` is active
+    high: 1 = on. Ask which hardware first.
+  - Dropped a digit (`0b0001000` = LED 3). Split a byte into two nibbles to count.
+  - Called `0xFFFFFFFF` the size. It's the **last** address; the count is 2³².
+  - "Why hex?" needed a fill-in: hex is **short** and still **shows the bits**.
+- Good questions I asked: why `0b00100101` = 37; why 32-bit MCUs leave most
+  of the space unused; whether 32-bit and 16-bit are the same (no: the data
+  size, and a 64 KB ceiling for 16-bit addresses)
